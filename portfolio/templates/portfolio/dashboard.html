@@ -1,0 +1,119 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Portfolio Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Add this in the <head> of your dashboard.html -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        
+        <h1>My Stock Portfolio</h1>
+        <div class="login-container">
+           
+            <a href="{% url 'custom-login' %}" class="login-button ">Login</a>
+          </div>
+        <table class="portfolio-table">
+            <thead>
+                <tr>
+                    <th>Ticker</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Purchase Price</th>
+                    <th>Current Price</th>
+                    <th>Profit/Loss</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stock in stocks %}
+                <tr>
+                    <td>{{ stock.ticker }}</td>
+                    <td>{{ stock.name }}</td>
+                    <td>{{ stock.quantity }}</td>
+                    <td>${{ stock.purchase_price }}</td>
+                    
+            <td>${{ stock.current_price|default:"N/A" }}</td>
+          
+                    <td class="{% if stock.profit_loss >= 0 %}positive{% else %}negative{% endif %}">
+                        ${{ stock.profit_loss }}
+                    </td>
+                    <td><a href="{% url 'remove_stock' stock.id %}">Remove </a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'add_stock' %}" class="add-button">Add Stock</a>
+    </div>
+    <!-- templates/dashboard.html -->
+<!-- <h2>Historical Performance</h2>
+<canvas id="stockChart" width="200px" height="100px"></canvas> -->
+
+</body>
+</html>
+<!-- Add this script at the end of dashboard.html -->
+<!-- <script>
+
+     // Function to fetch stock history
+     function fetchStockHistory(ticker) {
+            fetch(`/get_stock_history/${ticker}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data); // Log the data to check its structure
+                    renderStockChart(data);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        // Function to render the stock chart as a bar chart
+        function renderStockChart(data) {
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            const chartData = {
+                labels: data.dates, // Expecting an array of dates
+                datasets: [{
+                    label: 'Stock Price',
+                    data: data.prices, // Expecting an array of prices
+                    backgroundColor: 'rgba(25, 118, 210, 0.5)', // Bar color
+                    borderColor: '#1976d2', // Border color
+                    borderWidth: 0.2
+                }]
+            };
+            const config = {
+                type: 'bar', // Change to 'bar' for a bar chart
+                data: chartData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true // Start y-axis at zero
+                        }
+                    }
+                }
+            };
+            new Chart(ctx, config);
+        }
+    
+
+    // Call fetchStockHistory for a particular ticker
+    fetchStockHistory('AAPL'); // Replace 'AAPL' with the ticker you want to track
+
+
+    
+</script> -->
+
+
+
+
+
